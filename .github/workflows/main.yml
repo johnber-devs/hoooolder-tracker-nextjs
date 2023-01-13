@@ -7,7 +7,7 @@ on:
 
 # 환경설정
 env:
-  DOCKER_IMAGE: ghcr.io/${{ github.actor }}/hoooolder-tracker-cicd
+  DOCKER_IMAGE: ghcr.io/${{ github.actor }}/hoooolder-tracker-nextjs
   VERSION: ${{ github.sha }}
   NAME: go_cicd
 

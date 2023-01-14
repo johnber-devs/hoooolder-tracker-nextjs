@@ -9,10 +9,12 @@ on:
 env:
   DOCKER_IMAGE: ghcr.io/${{ github.actor }}/hoooolder-tracker-auto-deploy
   VERSION: ${{ github.sha }}
-  NAME: go_cicd
+  CONTANIER_NAME1: hoooolder-tracker-deploy1
+  CONTANIER_NAME2: hoooolder-tracker-deploy2
+  DOMAIN_NAME: ec2-13-209-84-79.ap-northeast-2.compute.amazonaws.com
+  NAME: prod
 
 jobs:
-  # 빌드 Job
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -43,7 +45,7 @@ jobs:
         with:
           builder: ${{ steps.buildx.outputs.name }}
           push: true
-          tags: ${{ env.DOCKER_IMAGE }}:latest
+          tags: ${{ env.DOCKER_IMAGE }}:${{ env.VERSION }}
   # 배포 Job
   deploy:
     needs: build  # build 후에 실행되도록 정의
@@ -56,8 +58,18 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.HOOOOLDER_TRACKER_CICD }}
-      # 3000 -> 80 포트로 수행하도록 지정
       - name: Docker run
         run: |
-          docker stop ${{ env.NAME }} && docker rm ${{ env.NAME }} && docker rmi ${{ env.DOCKER_IMAGE }}:latest
-          docker run -d -p 80:3000 --name go_cicd --restart always ${{ env.DOCKER_IMAGE }}:latest
+          docker ps -q --filter "name=${{ env.CONTANIER_NAME1 }}" | grep -q . && docker stop ${{ env.CONTANIER_NAME1 }} && docker rm -fv ${{ env.CONTANIER_NAME1 }}
+          docker run -d \
+                -e VIRTUAL_HOST=${{ env.DOMAIN_NAME }} \
+                -e CONTANIER_NAME=${{ env.CONTANIER_NAME1 }} \
+                --name ${{ env.CONTANIER_NAME1 }} \
+                --restart always ${{ env.DOCKER_IMAGE }}:${{ env.VERSION }}
+          docker ps -q --filter "name=${{ env.CONTANIER_NAME2 }}" | grep -q . && docker stop ${{ env.CONTANIER_NAME2 }} && docker rm -fv ${{ env.CONTANIER_NAME2 }}
+          docker run -d \
+                -e VIRTUAL_HOST=${{ env.DOMAIN_NAME }} \
+                -e CONTANIER_NAME=${{ env.CONTANIER_NAME2 }} \
+                --name ${{ env.CONTANIER_NAME2 }} \
+                --restart always ${{ env.DOCKER_IMAGE }}:${{ env.VERSION }}
+          docker image prune -af

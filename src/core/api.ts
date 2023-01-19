@@ -1,33 +1,34 @@
-import axios, { AxiosInstance, AxiosResponse } from 'axios'
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import { Constant } from 'src/core/constant';
+
 class Service {
-  private axiosInstance: AxiosInstance
+  private axiosInstance: AxiosInstance;
 
   constructor(baseUrl: string) {
     this.axiosInstance = axios.create({
       baseURL: baseUrl,
       timeout: 15000,
-    })
+    });
     this.axiosInstance.interceptors.request.use((config: any) => {
-      console.log('config', config)
-      return config
-    })
+      return config;
+    });
     this.axiosInstance.interceptors.response.use((response: any) => {
-      return response
-    })
+      return response;
+    });
   }
 
   public get<P, R>(url: string, params?: P): Promise<AxiosResponse<R>> {
-    return this.axiosInstance.get(url, { params })
+    return this.axiosInstance.get(url, { params });
   }
 
   public post(url: string, data: any) {
-    return this.axiosInstance.post(url, data)
+    return this.axiosInstance.post(url, data);
   }
 
   public delete(url: string) {
-    return this.axiosInstance.delete(url)
+    return this.axiosInstance.delete(url);
   }
 }
-const api = new Service('https://api.thecatapi.com')
+const api = { upbit: new Service(Constant.UPBIT_BASE_URL) };
 
-export { api }
+export { api };

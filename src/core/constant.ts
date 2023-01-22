@@ -7,5 +7,7 @@ export class Constant {
   public static readonly COIN_NAME_MAPPING_TABLE: COIN_NAME_MAPPING_TABLE = {
     BTC: '비트코인',
     ETH: '이더리움',
+    ATOM: '코스모스',
+    DOGE: '도지코인',
   };
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { CoinTickerInfo } from 'src/core/fetch/use-get-coin-ticker-info';
 
 export interface CoinTickerItemProps {
@@ -10,6 +10,9 @@ export default function CoinTickerItem({ coinTickerInfo }: CoinTickerItemProps) 
   const [prevDateRisingRate, setPrevDatesetRisingRate] = useState(0);
   const [prevDateRisingPrice, setPrevDatesetRisingPrice] = useState(0);
   const [signed, setSigned] = useState(true);
+
+  const [prevCoinPrice, setPrevCoinPrice] = useState(0);
+  const [changePrice, setChangePrice] = useState(0);
   useEffect(() => {
     const { prevClosingPrice, tradePrice } = coinTickerInfo;
     const signed = tradePrice - prevClosingPrice;
@@ -30,7 +33,14 @@ export default function CoinTickerItem({ coinTickerInfo }: CoinTickerItemProps) 
           100
       );
     }
-  }, [prevDateRisingRate]);
+  }, [coinTickerInfo.tradePrice]);
+
+  useMemo(() => {
+    if (prevCoinPrice !== 0) {
+      setChangePrice(coinTickerInfo.tradePrice - prevCoinPrice);
+    }
+    setPrevCoinPrice(coinTickerInfo.tradePrice);
+  }, [coinTickerInfo.tradePrice]);
 
   return (
     <>
@@ -40,12 +50,16 @@ export default function CoinTickerItem({ coinTickerInfo }: CoinTickerItemProps) 
           <div>{coinTickerInfo.market}</div>
         </div>
       </td>
-      <td className={'spx-2' + signed ? 'price-up' : 'price-down'}>
+      <td>
         <div>
-          <div>{coinTickerInfo.tradePrice.toLocaleString()}</div>
-          <div>
-            <span>{coinTickerInfo.signedChangePrice}</span>
-            <span>(↑ ↓ -)</span>
+          <div className={'spx-2' + signed ? 'price-up' : 'price-down'}>
+            {coinTickerInfo.tradePrice.toLocaleString()}
+          </div>
+          <div className={changePrice > 0 ? 'price-up-animation' : 'price-down-animation'}>
+            <span>
+              {changePrice > 0 ? '+' : ''}
+              {changePrice}({changePrice === 0 ? '-' : changePrice > 0 ? '↑' : '↓'})
+            </span>
           </div>
         </div>
       </td>
@@ -68,6 +82,35 @@ export default function CoinTickerItem({ coinTickerInfo }: CoinTickerItemProps) 
         }
         .price-even {
           color: black;
+        }
+
+        .price-up-animation {
+          animation: price-up 0.7s linear;
+        }
+        .price-down-animation {
+          animation: price-down 0.7s linear;
+        }
+        @keyframes price-up {
+          0% {
+            color: red;
+          }
+          70% {
+            color: red;
+          }
+          100% {
+            color: black;
+          }
+        }
+        @keyframes price-down {
+          0% {
+            color: blue;
+          }
+          70% {
+            color: blue;
+          }
+          100% {
+            color: black;
+          }
         }
       `}</style>
     </>

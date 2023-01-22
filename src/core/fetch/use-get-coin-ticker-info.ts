@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { getUpbitCoinPrice } from 'src/core/request/get-test-api';
 import { Constant, COIN_NAME_MAPPING_TABLE } from 'src/core/constant';
 
@@ -24,7 +24,7 @@ export const useGetCoinTickerInfo = () => {
     setIsFirst(false);
     try {
       const response = await getUpbitCoinPrice();
-      setList(listfilter(response.data));
+      setList([...listfilter(response.data)]);
     } catch (e) {
       console.log(e);
     } finally {
@@ -35,10 +35,6 @@ export const useGetCoinTickerInfo = () => {
   const listfilter = (data: any): CoinTickerInfo[] => {
     return data.map((coinInfo: any, index: number) => {
       const [market, coinName] = coinInfo.market.split('-');
-      const signedChangePrice = list[index]?.tradePrice
-        ? list[index]!.tradePrice - coinInfo.trade_price
-        : 0;
-      console.log('!!!!!!!!', signedChangePrice);
       return {
         coinName: Constant.COIN_NAME_MAPPING_TABLE[coinName],
         market: `${coinName} / ${market}`,
@@ -47,7 +43,6 @@ export const useGetCoinTickerInfo = () => {
         tradePrice: coinInfo.trade_price,
         prevClosingPrice: coinInfo.prev_closing_price,
         change: coinInfo.change,
-        signedChangePrice: signedChangePrice,
       };
     });
   };

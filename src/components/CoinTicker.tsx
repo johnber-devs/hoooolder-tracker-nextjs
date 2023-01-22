@@ -11,7 +11,7 @@ export default function CoinTicker({ coinTickerList = [] }: CoinTickerProps) {
   return (
     <div>
       <table className="w-full text-xs border table-fixed">
-        <tbody>
+        <tbody >
           <tr>
             <th>한글명</th>
             <th>현재가</th>
@@ -20,7 +20,7 @@ export default function CoinTicker({ coinTickerList = [] }: CoinTickerProps) {
           </tr>
           {coinTickerList &&
             coinTickerList.map((coinTickerInfo: CoinTickerInfo) => (
-              <tr className="text-right">
+              <tr className="text-right qy-2">
                 <CoinTickerItem coinTickerInfo={coinTickerInfo} />
               </tr>
             ))}

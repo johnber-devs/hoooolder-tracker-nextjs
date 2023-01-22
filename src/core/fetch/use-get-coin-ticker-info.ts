@@ -9,6 +9,9 @@ export interface CoinTickerInfo {
   tradeVolume: number;
   tradePrice: number;
   prevClosingPrice: number;
+  change: 'RISE' | 'FALL' | 'EVEN';
+  signedChangePrice: number;
+  signedChangeRate: number;
 }
 
 export const useGetCoinTickerInfo = () => {
@@ -29,24 +32,30 @@ export const useGetCoinTickerInfo = () => {
     }
   };
 
+  const listfilter = (data: any): CoinTickerInfo[] => {
+    return data.map((coinInfo: any, index: number) => {
+      const [market, coinName] = coinInfo.market.split('-');
+      const signedChangePrice = list[index]?.tradePrice
+        ? list[index]!.tradePrice - coinInfo.trade_price
+        : 0;
+      console.log('!!!!!!!!', signedChangePrice);
+      return {
+        coinName: Constant.COIN_NAME_MAPPING_TABLE[coinName],
+        market: `${coinName} / ${market}`,
+        tradeDate: coinInfo.trade_date,
+        tradeVolume: coinInfo.acc_trade_price,
+        tradePrice: coinInfo.trade_price,
+        prevClosingPrice: coinInfo.prev_closing_price,
+        change: coinInfo.change,
+        signedChangePrice: signedChangePrice,
+      };
+    });
+  };
+
   return {
     list,
     loading,
     isFirst,
     getCoinTickerInfo,
   };
-};
-
-export const listfilter = (data: any): CoinTickerInfo[] => {
-  return data.map((coinInfo: any) => {
-    const [market, coinName] = coinInfo.market.split('-');
-    return {
-      coinName: Constant.COIN_NAME_MAPPING_TABLE[coinName],
-      market: `${coinName} / ${market}`,
-      tradeDate: coinInfo.trade_date,
-      tradeVolume: coinInfo.acc_trade_price,
-      tradePrice: coinInfo.trade_price,
-      prevClosingPrice: coinInfo.prev_closing_price,
-    };
-  });
 };

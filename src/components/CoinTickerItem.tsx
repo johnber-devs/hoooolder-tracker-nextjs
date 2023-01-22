@@ -40,20 +40,36 @@ export default function CoinTickerItem({ coinTickerInfo }: CoinTickerItemProps) 
           <div>{coinTickerInfo.market}</div>
         </div>
       </td>
-      <td className="px-2">
+      <td className={'spx-2' + signed ? 'price-up' : 'price-down'}>
         <div>
           <div>{coinTickerInfo.tradePrice.toLocaleString()}</div>
+          <div>
+            <span>{coinTickerInfo.signedChangePrice}</span>
+            <span>(↑ ↓ -)</span>
+          </div>
         </div>
       </td>
-      <td className="px-2">
+      <td className={'spx-2' + signed ? 'price-up' : 'price-down'}>
         <div>
           {signed ? '+' : '-'} {prevDateRisingRate.toFixed(2)}%
         </div>
         <div>{prevDateRisingPrice}</div>
       </td>
-      <td className="px-2">
+      <td className={'spx-2'}>
         <div>{(coinTickerInfo.tradeVolume / 1_000_000).toFixed(0)}백만</div>
       </td>
+
+      <style jsx>{`
+        .price-up {
+          color: red;
+        }
+        .price-down {
+          color: blue;
+        }
+        .price-even {
+          color: black;
+        }
+      `}</style>
     </>
   );
 }

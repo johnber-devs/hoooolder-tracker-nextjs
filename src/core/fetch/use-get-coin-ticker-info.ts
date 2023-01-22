@@ -12,11 +12,13 @@ export interface CoinTickerInfo {
 }
 
 export const useGetCoinTickerInfo = () => {
-  const [list, setList] = useState<CoinTickerInfo[]>([]);
+  const [isFirst, setIsFirst] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [list, setList] = useState<CoinTickerInfo[]>([]);
 
   const getCoinTickerInfo = async () => {
     setLoading(true);
+    setIsFirst(false);
     try {
       const response = await getUpbitCoinPrice();
       setList(listfilter(response.data));
@@ -30,6 +32,7 @@ export const useGetCoinTickerInfo = () => {
   return {
     list,
     loading,
+    isFirst,
     getCoinTickerInfo,
   };
 };
@@ -41,7 +44,7 @@ export const listfilter = (data: any): CoinTickerInfo[] => {
       coinName: Constant.COIN_NAME_MAPPING_TABLE[coinName],
       market: `${coinName} / ${market}`,
       tradeDate: coinInfo.trade_date,
-      tradeVolume: coinInfo.trade_volume,
+      tradeVolume: coinInfo.acc_trade_price,
       tradePrice: coinInfo.trade_price,
       prevClosingPrice: coinInfo.prev_closing_price,
     };

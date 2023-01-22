@@ -20,7 +20,7 @@ export default function CoinTicker({ coinTickerList = [] }: CoinTickerProps) {
           </tr>
           {coinTickerList &&
             coinTickerList.map((coinTickerInfo: CoinTickerInfo) => (
-              <tr>
+              <tr className="text-right">
                 <CoinTickerItem coinTickerInfo={coinTickerInfo} />
               </tr>
             ))}

@@ -3,12 +3,15 @@ import { useEffect, useState } from 'react';
 import { getUpbitCoinPrice } from 'src/core/request/get-test-api';
 import { Main } from '@/templates/Main';
 import { Meta } from '@/layouts/Meta';
+import CoinTicker from '@/components/CoinTicker';
+import { useGetCoinTickerInfo } from 'src/core/fetch/use-get-coin-ticker-info';
+
 const Index = () => {
   const router = useRouter();
+  const { loading, list: coinTickerList, getCoinTickerInfo } = useGetCoinTickerInfo();
 
   const getCoinPrice = async () => {
-    const res = await getUpbitCoinPrice();
-    console.log(res.data);
+    await getCoinTickerInfo();
   };
 
   useEffect(() => {
@@ -24,6 +27,7 @@ const Index = () => {
         />
       }>
       <div> BTC/KRW </div>
+      <CoinTicker coinTickerList={coinTickerList} />
       <div> </div>
     </Main>
   );

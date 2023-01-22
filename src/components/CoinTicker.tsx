@@ -10,7 +10,7 @@ export interface CoinTickerProps {
 export default function CoinTicker({ coinTickerList = [] }: CoinTickerProps) {
   return (
     <div>
-      <table className="w-full text-xs border">
+      <table className="w-full text-xs border table-fixed">
         <tbody>
           <tr>
             <th>한글명</th>

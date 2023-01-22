@@ -52,7 +52,7 @@ export default function CoinTickerItem({ coinTickerInfo }: CoinTickerItemProps) 
       </td>
       <td>
         <div>
-          <div className={'spx-2' + signed ? 'price-up' : 'price-down'}>
+          <div className={`spx-2 ${signed ? 'price-up' : 'price-down'}`}>
             {coinTickerInfo.tradePrice.toLocaleString()}
           </div>
           <div className={changePrice > 0 ? 'price-up-animation' : 'price-down-animation'}>
@@ -63,7 +63,7 @@ export default function CoinTickerItem({ coinTickerInfo }: CoinTickerItemProps) 
           </div>
         </div>
       </td>
-      <td className={'spx-2' + signed ? 'price-up' : 'price-down'}>
+      <td className={`spx-2 ${signed ? 'price-up' : 'price-down'}`}>
         <div>
           {signed ? '+' : '-'} {prevDateRisingRate.toFixed(2)}%
         </div>

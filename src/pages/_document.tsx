@@ -1,5 +1,5 @@
 import Document, { Head, Html, Main, NextScript } from 'next/document';
-
+import { ServerStyleSheets } from '@mui/styles';
 import { AppConfig } from '@/utils/AppConfig';
 
 // Need to create a custom _document because i18n support is not compatible with `next export`.
@@ -17,5 +17,21 @@ class MyDocument extends Document {
     );
   }
 }
+
+MyDocument.getInitialProps = async ctx => {
+  const materialSheets = new ServerStyleSheets();
+  const originalRenderPage = ctx.renderPage;
+
+  ctx.renderPage = () =>
+    originalRenderPage({
+      enhanceApp: App => props => materialSheets.collect(<App {...props} />),
+    });
+
+  const initialProps = await Document.getInitialProps(ctx);
+  return {
+    ...initialProps,
+    styles: <>{initialProps.styles}</>,
+  };
+};
 
 export default MyDocument;
